@@ -134,6 +134,12 @@
       text-align: center;
     }
 
+    #typed2 br {
+      display: block;
+      content: '';
+      margin-top: -0.4em;
+    }
+
     #page-2 .texte {
       font-size: clamp(1.1rem, 2.5vw, 1.8rem);
       color: #2c2c2c;
@@ -154,6 +160,7 @@
     @keyframes clignoter {
       50% { opacity: 0; }
     }
+
 
     @media (max-width: 600px) {
       h1 { font-size: clamp(2rem, 11vw, 3.5rem); }
@@ -186,6 +193,10 @@
   </style>
 </head>
 <body>
+  <canvas id="c-chars"    style="position:fixed;bottom:0;left:0;width:100%;height:70px;pointer-events:none;z-index:4;display:none;"></canvas>
+  <canvas id="c-petals"    style="position:fixed;inset:0;pointer-events:none;z-index:4;display:none;"></canvas>
+  <canvas id="c-particles" style="position:fixed;inset:0;pointer-events:none;z-index:4;display:none;"></canvas>
+
   <div id="page-3" style="display:none; position:fixed; inset:0; background-color:#fff8f0; align-items:center; justify-content:center; padding:2rem; opacity:0; transition: opacity 0.8s ease; overflow-y:auto;">
     <div style="display:flex; flex-direction:column; align-items:center; gap:2rem; width:100%;">
       <p class="texte"><span id="typed2"></span><span id="curseur2" style="display:inline-block; width:2px; height:1.1em; background:#e8a0b4; vertical-align:text-bottom; animation: clignoter 0.7s step-end infinite;"></span></p>
@@ -240,6 +251,152 @@
 
           let cardsShown = false;
           let currentInterval = null;
+          let petalsStarted = false;
+          let particlesStarted = false;
+          let charsStarted = false;
+
+          function startCharacters() {
+            const cv = document.getElementById('c-chars');
+            cv.style.display = 'block';
+            cv.width = cv.offsetWidth || window.innerWidth;
+            cv.height = 70;
+            const cx = cv.getContext('2d');
+            const S = window.innerWidth < 600 ? 3 : 4;
+            const P = [null,'#f5c5a3','#2c1a0e','#5c3d1e','#c87050','#5c8ab4','#3d2d5c','#e8a0b4','#f0ddd0','#1a1209'];
+
+            const BOY = [
+              [[0,3,3,3,3,0,0,0],[0,3,1,1,1,3,0,0],[0,0,1,2,1,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,1,0,0,0,0],[0,5,5,5,5,5,5,5],[0,5,5,5,5,0,0,0],[0,0,6,6,0,6,0,0],[0,6,6,0,0,6,0,0],[9,9,0,0,0,6,0,0],[9,0,0,0,0,9,9,0]],
+              [[0,3,3,3,3,0,0,0],[0,3,1,1,1,3,0,0],[0,0,1,2,1,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,1,0,0,0,0],[0,5,5,5,5,5,5,5],[0,5,5,5,5,0,0,0],[0,0,6,6,0,6,0,0],[0,0,6,0,0,6,6,0],[0,0,6,0,0,0,9,9],[0,9,9,0,0,0,9,0]],
+            ];
+            const GIRL = [
+              [[0,0,4,4,4,4,0,0],[0,0,4,1,1,4,4,0],[0,0,1,1,2,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,0,1,0,0,0],[7,7,7,7,7,7,7,0],[0,0,0,7,7,7,7,0],[0,7,7,7,7,7,7,0],[0,0,8,8,0,8,0,0],[0,9,9,0,0,8,0,0],[0,9,0,0,0,9,9,0]],
+              [[0,0,4,4,4,4,0,0],[0,0,4,1,1,4,4,0],[0,0,1,1,2,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,0,1,0,0,0],[7,7,7,7,7,7,7,0],[0,0,0,7,7,7,7,0],[0,7,7,7,7,7,7,0],[0,0,8,0,0,8,8,0],[0,0,8,0,0,0,9,9],[0,9,9,0,0,0,9,0]],
+            ];
+            const HEART = [
+              [0,1,1,0,1,1,0],
+              [1,1,1,1,1,1,1],
+              [1,1,1,1,1,1,1],
+              [0,1,1,1,1,1,0],
+              [0,0,1,1,1,0,0],
+              [0,0,0,1,0,0,0],
+            ];
+
+            function drawChar(frames, fi, x, y) {
+              frames[fi].forEach((row, ry) => row.forEach((c, rx) => {
+                if (!c) return;
+                cx.fillStyle = P[c]; cx.fillRect(x + rx*S, y + ry*S, S, S);
+              }));
+            }
+            function drawHeart(x, y) {
+              HEART.forEach((row, ry) => row.forEach((p, rx) => {
+                if (!p) return;
+                cx.fillStyle = '#e8305a';
+                cx.fillRect(x + rx*S, y + ry*S, S, S);
+              }));
+            }
+
+            const CW = 8*S, CH = 11*S, baseY = cv.height - CH - 2;
+            let bx = -CW*3, frame = 0, ft = 0, bob = 0;
+
+            (function loop() {
+              cx.clearRect(0, 0, cv.width, cv.height);
+              bx += 1;
+              if (bx > cv.width + CW) bx = -CW * 3;
+              if (++ft % 15 === 0) frame = (frame+1) % 2;
+              bob += 0.06;
+              const gx = bx + CW;
+              drawChar(BOY, frame, bx, baseY);
+              drawChar(GIRL, frame, gx, baseY);
+              const heartX = bx + CW - 3*S + Math.round(Math.sin(bob) * 0) ;
+              const heartY = baseY - 8*S + Math.round(Math.sin(bob) * S);
+              drawHeart(heartX, heartY);
+              requestAnimationFrame(loop);
+            })();
+          }
+
+          function startPetals() {
+            const cv = document.getElementById('c-petals');
+            cv.width = window.innerWidth; cv.height = window.innerHeight;
+            cv.style.display = 'block';
+            const cx = cv.getContext('2d');
+            const cols = ['#e8a0b4','#f4c2d0','#f9d0dd','#e07090','#fce4ec'];
+            const petals = Array.from({length: 40}, () => ({
+              x: Math.random() * cv.width,
+              y: Math.random() * -cv.height,
+              size: Math.random() * 10 + 6,
+              vy: Math.random() * 1.2 + 0.6,
+              vx: (Math.random() - 0.5) * 0.8,
+              angle: Math.random() * Math.PI * 2,
+              spin: (Math.random() - 0.5) * 0.04,
+              sway: Math.random() * Math.PI * 2,
+              swaySpeed: Math.random() * 0.02 + 0.01,
+              swayAmp: Math.random() * 1.2 + 0.4,
+              c: cols[Math.floor(Math.random() * cols.length)],
+              a: Math.random() * 0.4 + 0.6,
+            }));
+            function drawPetal(x, y, size, angle, color, alpha) {
+              cx.save();
+              cx.globalAlpha = alpha;
+              cx.translate(x, y);
+              cx.rotate(angle);
+              cx.fillStyle = color;
+              cx.beginPath();
+              cx.moveTo(0, 0);
+              cx.bezierCurveTo(size * 0.6, -size * 0.4, size * 1.1, size * 0.3, size * 0.5, size * 0.8);
+              cx.bezierCurveTo(size * 0.1, size * 1.1, -size * 0.3, size * 0.6, 0, 0);
+              cx.fill();
+              cx.restore();
+            }
+            (function loop() {
+              cx.clearRect(0, 0, cv.width, cv.height);
+              petals.forEach(p => {
+                p.sway += p.swaySpeed;
+                p.x += p.vx + Math.sin(p.sway) * p.swayAmp;
+                p.y += p.vy;
+                p.angle += p.spin;
+                if (p.y > cv.height + 20) { p.y = -20; p.x = Math.random() * cv.width; }
+                drawPetal(p.x, p.y, p.size, p.angle, p.c, p.a);
+              });
+              requestAnimationFrame(loop);
+            })();
+          }
+
+          function startParticles() {
+            const cv = document.getElementById('c-particles');
+            cv.width = window.innerWidth; cv.height = window.innerHeight;
+            cv.style.display = 'block';
+            const cx = cv.getContext('2d');
+            const cols = ['#e8a0b4','#f4c2d0','#ffd080','#fff0e0','#ffcce0'];
+            const ps = Array.from({length: 70}, () => ({
+              x: Math.random() * cv.width, y: Math.random() * cv.height,
+              r: Math.random() * 2 + 0.5,
+              vy: -(Math.random() * 0.6 + 0.2),
+              vx: (Math.random() - 0.5) * 0.2,
+              a: Math.random() * 0.6 + 0.2,
+              ph: Math.random() * Math.PI * 2,
+              sp: Math.random() * 0.03 + 0.01,
+              c: cols[Math.floor(Math.random() * cols.length)]
+            }));
+            (function loop() {
+              cx.clearRect(0, 0, cv.width, cv.height);
+              ps.forEach(p => {
+                p.x += p.vx; p.y += p.vy; p.ph += p.sp;
+                if (p.y < -5) { p.y = cv.height + 5; p.x = Math.random() * cv.width; }
+                const a = p.a * (0.4 + 0.6 * Math.abs(Math.sin(p.ph)));
+                cx.save();
+                cx.globalAlpha = a;
+                cx.shadowBlur = p.r * 6; cx.shadowColor = p.c; cx.fillStyle = p.c;
+                cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI * 2); cx.fill();
+                cx.strokeStyle = p.c; cx.lineWidth = 0.5;
+                const l = p.r * 3;
+                cx.beginPath();
+                cx.moveTo(p.x-l, p.y); cx.lineTo(p.x+l, p.y);
+                cx.moveTo(p.x, p.y-l); cx.lineTo(p.x, p.y+l);
+                cx.stroke(); cx.restore();
+              });
+              requestAnimationFrame(loop);
+            })();
+          }
 
           function playThinkCard(text, cardIndex) {
             if (currentInterval) clearInterval(currentInterval);
@@ -265,6 +422,18 @@
                   document.querySelectorAll('.card').forEach((card, idx) => {
                     setTimeout(() => card.classList.add('visible'), idx * 200);
                   });
+                }
+                if (cardIndex === 0 && !petalsStarted) {
+                  petalsStarted = true;
+                  startPetals();
+                }
+                if (cardIndex === 1 && !particlesStarted) {
+                  particlesStarted = true;
+                  startParticles();
+                }
+                if (cardIndex === 2 && !charsStarted) {
+                  charsStarted = true;
+                  startCharacters();
                 }
               }
             }, 40);
