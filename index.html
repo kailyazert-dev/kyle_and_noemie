@@ -86,6 +86,58 @@
   <script>
     const btnNon = document.getElementById('btn-non');
     const TRIGGER_DISTANCE = 80;
+    let escapeCount = 0;
+
+    function spawnTexts(content, color) {
+      for (let i = 0; i < 15; i++) {
+        const el = document.createElement('span');
+        el.textContent = content;
+        el.style.cssText = `
+          position: fixed;
+          font-size: ${1.2 + Math.random() * 2}rem;
+          font-family: 'Georgia', serif;
+          font-weight: bold;
+          color: ${color};
+          left: ${Math.random() * 90}vw;
+          top: ${Math.random() * 90}vh;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+          z-index: 999;
+          transform: rotate(${-20 + Math.random() * 40}deg);
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.style.opacity = '1', 50);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 500);
+        }, 2000 + Math.random() * 1000);
+      }
+    }
+
+    function spawnEmojis() {
+      const emojis = ['😂', '🤣', '😆', '😄'];
+      for (let i = 0; i < 20; i++) {
+        const el = document.createElement('span');
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.cssText = `
+          position: fixed;
+          font-size: ${1.5 + Math.random() * 2.5}rem;
+          left: ${Math.random() * 90}vw;
+          top: ${Math.random() * 90}vh;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+          z-index: 999;
+        `;
+        document.body.appendChild(el);
+        setTimeout(() => el.style.opacity = '1', 50);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 500);
+        }, 2000 + Math.random() * 1000);
+      }
+    }
 
     btnNon.style.position = 'fixed';
     btnNon.style.left = '50%';
@@ -114,6 +166,9 @@
         btnNon.style.transform = 'none';
         btnNon.style.left = newX + 'px';
         btnNon.style.top = newY + 'px';
+        escapeCount++;
+        if (escapeCount === 1) spawnEmojis();
+        else if (escapeCount === 2) spawnTexts('Holé !', '#e8a0b4');
       }
     });
   </script>
