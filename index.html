@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bonjour Noemie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -16,8 +18,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #fff8f0;
-      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #fff8f0, #fde8f0, #fff0e8, #fdf0ff);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .container {
@@ -31,13 +41,15 @@
       font-size: clamp(2.5rem, 8vw, 6rem);
       color: #2c2c2c;
       text-align: center;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.04em;
+      font-weight: 600;
     }
 
     p {
       font-size: clamp(1.2rem, 3.5vw, 2.5rem);
-      color: #555;
+      color: #7a5a5a;
       text-align: center;
+      font-style: italic;
     }
 
     .buttons {
@@ -101,18 +113,28 @@
     }
 
     .card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(232,160,180,0.25);
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(232,160,180,0.15);
       padding: 1.4em 1.8em;
       max-width: 200px;
       text-align: center;
       font-size: 0.95rem;
+      font-family: 'Cormorant Garamond', Georgia, serif;
       color: #2c2c2c;
       line-height: 1.6;
       opacity: 0;
       transform: translateY(40px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card.visible:not(.active):hover {
+      box-shadow: 0 8px 32px rgba(232,160,180,0.3);
+      border-color: rgba(232,160,180,0.5);
+      transform: translateY(-3px);
     }
 
     .card.visible {
