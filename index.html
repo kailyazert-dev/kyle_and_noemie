@@ -71,9 +71,68 @@
       color: #555;
       transition: left 0.1s ease, top 0.1s ease, transform 0.1s ease;
     }
+
+    #page-2 {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: #fff8f0;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    #page-2.visible {
+      display: flex;
+      opacity: 1;
+    }
+
+    #page-3 .texte {
+      font-size: clamp(0.85rem, 1.8vw, 1.2rem);
+      max-width: 750px;
+      line-height: 1.8;
+      color: #2c2c2c;
+      text-align: center;
+    }
+
+    #page-2 .texte {
+      font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+      color: #2c2c2c;
+      text-align: center;
+      max-width: 750px;
+      line-height: 1.8;
+    }
+
+    #curseur {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: #e8a0b4;
+      vertical-align: text-bottom;
+      animation: clignoter 0.7s step-end infinite;
+    }
+
+    @keyframes clignoter {
+      50% { opacity: 0; }
+    }
   </style>
 </head>
 <body>
+  <div id="page-3" style="display:none; position:fixed; inset:0; background-color:#fff8f0; align-items:center; justify-content:center; padding:2rem; opacity:0; transition: opacity 0.8s ease;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
+      <p class="texte"><span id="typed2"></span><span id="curseur2" style="display:inline-block; width:2px; height:1.1em; background:#e8a0b4; vertical-align:text-bottom; animation: clignoter 0.7s step-end infinite;"></span></p>
+    </div>
+  </div>
+
+  <div id="page-2">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
+      <p class="texte"><span id="typed"></span><span id="curseur"></span></p>
+      <button id="btn-suivant" style="display:none; opacity:0; transition: opacity 0.6s ease;">Suivant →</button>
+    </div>
+  </div>
+
   <div class="container">
     <h1>Bonjour Noemie</h1>
     <p>Veut tu date avec moi ?</p>
@@ -84,9 +143,59 @@
   </div>
 
   <script>
+    document.getElementById('btn-oui').addEventListener('click', () => {
+      gameOver = true;
+      btnNon.style.display = 'none';
+      document.querySelector('.container').style.display = 'none';
+      const page2 = document.getElementById('page-2');
+      page2.style.display = 'flex';
+      requestAnimationFrame(() => requestAnimationFrame(() => page2.style.opacity = '1'));
+
+      const texte1 = "Tres bon choix, mais avant qu'on se revoit j'aimerais que tu lise ces quelques mots qui reflètent mes pensées que j'ai pour toi :";
+      const el = document.getElementById('typed');
+      let i = 0;
+      const interval = setInterval(() => {
+        el.textContent += texte1[i];
+        i++;
+        if (i >= texte1.length) {
+          clearInterval(interval);
+          document.getElementById('curseur').style.display = 'none';
+          const btnSuivant = document.getElementById('btn-suivant');
+          btnSuivant.style.display = 'block';
+          requestAnimationFrame(() => requestAnimationFrame(() => btnSuivant.style.opacity = '1'));
+          btnSuivant.addEventListener('click', () => {
+            document.getElementById('page-2').style.opacity = '0';
+            setTimeout(() => {
+              document.getElementById('page-2').style.display = 'none';
+              const page3 = document.getElementById('page-3');
+              page3.style.display = 'flex';
+              requestAnimationFrame(() => requestAnimationFrame(() => page3.style.opacity = '1'));
+              const texte2 = "La vérité, c'est qu'il n'y a pas un seul instant où je ne pense pas à toi.\n\nTu es ma première pensée au matin, avant même que la lumière n'ose entrer.\n\nLe dernier murmure dans ma conscience avant que le sommeil ne m'emporte.\n\nIl n'existe pas un seul souffle de ma journée où tu n'es pas là, quelque part.\n\nPas un seul rêve où le désir ne demande pas la permission — nos corps enlacés, frémissants, se consumant l'un dans l'autre jusqu'à l'ivresse.";
+              const el2 = document.getElementById('typed2');
+              let j = 0;
+              const interval2 = setInterval(() => {
+                if (texte2[j] === '\n') {
+                  el2.innerHTML += '<br>';
+                } else {
+                  el2.innerHTML += texte2[j];
+                }
+                j++;
+                if (j >= texte2.length) {
+                  clearInterval(interval2);
+                  document.getElementById('curseur2').style.display = 'none';
+                }
+              }, 40);
+            }, 800);
+          });
+        }
+      }, 40);
+    });
+
     const btnNon = document.getElementById('btn-non');
     const TRIGGER_DISTANCE = 80;
     let escapeCount = 0;
+    let lastEffectTime = 0;
+    let gameOver = false;
 
     function spawnTexts(content, color) {
       for (let i = 0; i < 15; i++) {
@@ -139,12 +248,10 @@
       }
     }
 
-    btnNon.style.position = 'fixed';
-    btnNon.style.left = '50%';
-    btnNon.style.top = '60%';
-    btnNon.style.transform = 'translate(-50%, -50%)';
+    let isFixed = false;
 
     document.addEventListener('mousemove', (e) => {
+      if (gameOver) return;
       const rect = btnNon.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
@@ -153,6 +260,13 @@
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist < TRIGGER_DISTANCE) {
+        if (!isFixed) {
+          const r = btnNon.getBoundingClientRect();
+          btnNon.style.position = 'fixed';
+          btnNon.style.left = r.left + 'px';
+          btnNon.style.top = r.top + 'px';
+          isFixed = true;
+        }
         const margin = 80;
         let newX, newY, attempts = 0;
         do {
@@ -163,12 +277,28 @@
           if (Math.sqrt(fdx * fdx + fdy * fdy) > 200) break;
           attempts++;
         } while (attempts < 15);
-        btnNon.style.transform = 'none';
+        btnNon.style.transform = '';
         btnNon.style.left = newX + 'px';
         btnNon.style.top = newY + 'px';
-        escapeCount++;
-        if (escapeCount === 1) spawnEmojis();
-        else if (escapeCount === 2) spawnTexts('Holé !', '#e8a0b4');
+        const now = Date.now();
+        if (now - lastEffectTime >= 1000) {
+          lastEffectTime = now;
+          escapeCount++;
+          if (escapeCount === 1) spawnEmojis();
+          else if (escapeCount === 2) spawnTexts('Oléééééé !', '#e8a0b4');
+          else if (escapeCount === 3) spawnTexts('youhhuuuuuuu', '#f4a261');
+          else if (escapeCount === 4) { spawnTexts('Oléééééé !', '#e8a0b4'); spawnEmojis(); }
+          else if (escapeCount === 5) { spawnTexts('Encore raté !', '#f4a261'); spawnEmojis(); }
+          else if (escapeCount === 6) {
+            btnNon.style.transition += ', font-size 0.5s ease, padding 0.5s ease';
+            btnNon.style.fontSize = '0.6rem';
+            btnNon.style.padding = '0.3em 1em';
+            const btnOui = document.getElementById('btn-oui');
+            btnOui.style.transition = 'font-size 0.5s ease, padding 0.5s ease, box-shadow 0.5s ease';
+            btnOui.style.fontSize = '2rem';
+            btnOui.style.padding = '0.8em 2.5em';
+          }
+        }
       }
     });
   </script>
