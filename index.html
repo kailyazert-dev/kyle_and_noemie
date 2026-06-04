@@ -89,8 +89,45 @@
       opacity: 1;
     }
 
+    .cards {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: fixed;
+      bottom: 2rem;
+      left: 0;
+      right: 0;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      padding: 1.4em 1.8em;
+      max-width: 200px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #2c2c2c;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card.active {
+      border: 2px solid #e8a0b4;
+      box-shadow: 0 4px 20px rgba(232, 160, 180, 0.35);
+      cursor: default;
+    }
+
     #page-3 .texte {
-      font-size: clamp(0.85rem, 1.8vw, 1.2rem);
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
       max-width: 750px;
       line-height: 1.8;
       color: #2c2c2c;
@@ -120,9 +157,14 @@
   </style>
 </head>
 <body>
-  <div id="page-3" style="display:none; position:fixed; inset:0; background-color:#fff8f0; align-items:center; justify-content:center; padding:2rem; opacity:0; transition: opacity 0.8s ease;">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
+  <div id="page-3" style="display:none; position:fixed; inset:0; background-color:#fff8f0; align-items:center; justify-content:center; padding:2rem; opacity:0; transition: opacity 0.8s ease; overflow-y:auto;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem; width:100%;">
       <p class="texte"><span id="typed2"></span><span id="curseur2" style="display:inline-block; width:2px; height:1.1em; background:#e8a0b4; vertical-align:text-bottom; animation: clignoter 0.7s step-end infinite;"></span></p>
+      <div class="cards" id="cards">
+        <div class="card">Pensée 1</div>
+        <div class="card">Pensée 2</div>
+        <div class="card">Pensée 3</div>
+      </div>
     </div>
   </div>
 
@@ -151,7 +193,7 @@
       page2.style.display = 'flex';
       requestAnimationFrame(() => requestAnimationFrame(() => page2.style.opacity = '1'));
 
-      const texte1 = "Tres bon choix, mais avant qu'on se revoit j'aimerais que tu lise ces quelques mots qui reflètent mes pensées que j'ai pour toi :";
+      const texte1 = "Tres bon choix, mais avant qu'on se revoit j'aimerais que tu lise ces quelques mots qui reflètent mes pensées pour toi :";
       const el = document.getElementById('typed');
       let i = 0;
       const interval = setInterval(() => {
@@ -163,28 +205,56 @@
           const btnSuivant = document.getElementById('btn-suivant');
           btnSuivant.style.display = 'block';
           requestAnimationFrame(() => requestAnimationFrame(() => btnSuivant.style.opacity = '1'));
+          const think_card1 = "La vérité, c'est qu'il n'y a pas un seul instant où je ne pense pas à toi.\n\nTu es ma première pensée au matin, avant même que la lumière n'ose entrer.\n\nLe dernier murmure dans ma conscience avant que le sommeil ne m'emporte.\n\nIl n'existe pas un seul souffle de ma journée où tu n'es pas là, quelque part.\n\nPas un seul rêve où le désir n'enlace nos corps frémissants, sans permission, se consumant l'un dans l'autre jusqu'à l'ivresse.";
+          const think_card2 = "Pensé 2"; // À remplir
+          const think_card3 = "Pensé 3"; // À remplir
+
+          let cardsShown = false;
+          let currentInterval = null;
+
+          function playThinkCard(text, cardIndex) {
+            if (currentInterval) clearInterval(currentInterval);
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            if (cardIndex !== undefined) document.querySelectorAll('.card')[cardIndex].classList.add('active');
+            const el2 = document.getElementById('typed2');
+            const curseur2 = document.getElementById('curseur2');
+            el2.innerHTML = '';
+            curseur2.style.display = 'inline-block';
+            let j = 0;
+            currentInterval = setInterval(() => {
+              if (text[j] === '\n') {
+                el2.innerHTML += '<br>';
+              } else {
+                el2.innerHTML += text[j];
+              }
+              j++;
+              if (j >= text.length) {
+                clearInterval(currentInterval);
+                curseur2.style.display = 'none';
+                if (!cardsShown) {
+                  cardsShown = true;
+                  document.querySelectorAll('.card').forEach((card, idx) => {
+                    setTimeout(() => card.classList.add('visible'), idx * 200);
+                  });
+                }
+              }
+            }, 40);
+          }
+
+          document.querySelectorAll('.card')[0].addEventListener('click', () => { if (!document.querySelectorAll('.card')[0].classList.contains('active')) playThinkCard(think_card1, 0); });
+          document.querySelectorAll('.card')[1].addEventListener('click', () => { if (!document.querySelectorAll('.card')[1].classList.contains('active')) playThinkCard(think_card2, 1); });
+          document.querySelectorAll('.card')[2].addEventListener('click', () => { if (!document.querySelectorAll('.card')[2].classList.contains('active')) playThinkCard(think_card3, 2); });
+
           btnSuivant.addEventListener('click', () => {
             document.getElementById('page-2').style.opacity = '0';
             setTimeout(() => {
               document.getElementById('page-2').style.display = 'none';
               const page3 = document.getElementById('page-3');
               page3.style.display = 'flex';
-              requestAnimationFrame(() => requestAnimationFrame(() => page3.style.opacity = '1'));
-              const texte2 = "La vérité, c'est qu'il n'y a pas un seul instant où je ne pense pas à toi.\n\nTu es ma première pensée au matin, avant même que la lumière n'ose entrer.\n\nLe dernier murmure dans ma conscience avant que le sommeil ne m'emporte.\n\nIl n'existe pas un seul souffle de ma journée où tu n'es pas là, quelque part.\n\nPas un seul rêve où le désir ne demande pas la permission — nos corps enlacés, frémissants, se consumant l'un dans l'autre jusqu'à l'ivresse.";
-              const el2 = document.getElementById('typed2');
-              let j = 0;
-              const interval2 = setInterval(() => {
-                if (texte2[j] === '\n') {
-                  el2.innerHTML += '<br>';
-                } else {
-                  el2.innerHTML += texte2[j];
-                }
-                j++;
-                if (j >= texte2.length) {
-                  clearInterval(interval2);
-                  document.getElementById('curseur2').style.display = 'none';
-                }
-              }, 40);
+              requestAnimationFrame(() => requestAnimationFrame(() => {
+                page3.style.opacity = '1';
+                playThinkCard(think_card1, 0);
+              }));
             }, 800);
           });
         }
