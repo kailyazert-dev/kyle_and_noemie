@@ -241,6 +241,13 @@ button {
     text-align: center;
 }
 
+/* 700 n'est pas chargé pour Cormorant Garamond : on utilise le 600 réel
+   plutôt qu'un faux gras calculé par le navigateur */
+#page-pense strong {
+    font-weight: 600;
+    color: #2c2c2c;
+}
+
 #typed-pense br {
     display: block;
     content: '';

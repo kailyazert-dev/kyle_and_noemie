@@ -386,9 +386,24 @@ function playPenseCard(text, cardIndex) {
     curseur.style.display = 'inline-block';
 
     let i = 0;
+    let rendu = '';
+    let gras = false;
     penseInterval = setInterval(() => {
-        el.innerHTML += text[i] === '\n' ? '<br>' : text[i];
-        i++;
+        if (text[i] === '\n') {
+            rendu += '<br>';
+            i++;
+        } else if (text[i] === '*' && text[i + 1] === '*') {
+            // **texte** : ouvre puis ferme le gras, la balise est insérée d'un coup
+            rendu += gras ? '</strong>' : '<strong>';
+            gras = !gras;
+            i += 2;
+        } else {
+            rendu += text[i];
+            i++;
+        }
+        // réassignation complète : le navigateur referme la balise ouverte,
+        // donc le texte en cours de frappe reste bien à l'intérieur
+        el.innerHTML = rendu;
         if (i >= text.length) {
             clearInterval(penseInterval);
             penseInterval = null;
