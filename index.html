@@ -1,636 +1,72 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bonjour Noemie</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #fff8f0, #fde8f0, #fff0e8, #fdf0ff);
-      background-size: 400% 400%;
-      animation: gradientShift 12s ease infinite;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-    }
-
-    @keyframes gradientShift {
-      0%   { background-position: 0% 50%; }
-      50%  { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    h1 {
-      font-size: clamp(2.5rem, 8vw, 6rem);
-      color: #2c2c2c;
-      text-align: center;
-      letter-spacing: 0.04em;
-      font-weight: 600;
-    }
-
-    p {
-      font-size: clamp(1.2rem, 3.5vw, 2.5rem);
-      color: #7a5a5a;
-      text-align: center;
-      font-style: italic;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 2rem;
-      margin-top: 0.5rem;
-    }
-
-    button {
-      font-size: clamp(1rem, 2.5vw, 1.5rem);
-      font-family: 'Georgia', serif;
-      padding: 0.6em 2em;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s;
-    }
-
-    #btn-oui {
-      background-color: #e8a0b4;
-      color: #fff;
-    }
-
-    #btn-oui:hover {
-      transform: scale(1.07);
-      box-shadow: 0 4px 14px rgba(232, 160, 180, 0.5);
-    }
-
-    #btn-non {
-      background-color: #ddd;
-      color: #555;
-      transition: left 0.1s ease, top 0.1s ease, transform 0.1s ease;
-    }
-
-    #page-2 {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background-color: #fff8f0;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-
-    #page-2.visible {
-      display: flex;
-      opacity: 1;
-    }
-
-    .cards {
-      display: flex;
-      gap: 1.2rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      position: fixed;
-      bottom: 2rem;
-      left: 0;
-      right: 0;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.75);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(232,160,180,0.25);
-      border-radius: 20px;
-      box-shadow: 0 4px 24px rgba(232,160,180,0.15);
-      padding: 1.4em 1.8em;
-      max-width: 200px;
-      text-align: center;
-      font-size: 0.95rem;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      color: #2c2c2c;
-      line-height: 1.6;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      cursor: pointer;
-    }
-
-    .card.visible:not(.active):hover {
-      box-shadow: 0 8px 32px rgba(232,160,180,0.3);
-      border-color: rgba(232,160,180,0.5);
-      transform: translateY(-3px);
-    }
-
-    .card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .card.active {
-      border: 2px solid #e8a0b4;
-      box-shadow: 0 4px 20px rgba(232, 160, 180, 0.35);
-      cursor: default;
-    }
-
-    #page-3 .texte {
-      font-size: clamp(1rem, 1.8vw, 1.2rem);
-      max-width: 750px;
-      line-height: 1.8;
-      color: #2c2c2c;
-      text-align: center;
-    }
-
-    #typed2 br {
-      display: block;
-      content: '';
-      margin-top: -0.4em;
-    }
-
-    #page-2 .texte {
-      font-size: clamp(1.1rem, 2.5vw, 1.8rem);
-      color: #2c2c2c;
-      text-align: center;
-      max-width: 750px;
-      line-height: 1.8;
-    }
-
-    #curseur {
-      display: inline-block;
-      width: 2px;
-      height: 1.1em;
-      background: #e8a0b4;
-      vertical-align: text-bottom;
-      animation: clignoter 0.7s step-end infinite;
-    }
-
-    @keyframes clignoter {
-      50% { opacity: 0; }
-    }
-
-
-    @media (max-width: 600px) {
-      h1 { font-size: clamp(2rem, 11vw, 3.5rem); }
-
-      p { font-size: clamp(1rem, 4.5vw, 1.4rem); }
-
-      button { font-size: 1rem; padding: 0.7em 1.8em; }
-
-      #page-2 .texte { font-size: 1rem; padding: 0 0.5rem; }
-
-      #page-3 .texte {
-        font-size: 0.95rem;
-        padding: 0 1rem;
-        padding-bottom: 130px;
-      }
-
-      .cards {
-        gap: 0.7rem;
-        bottom: 1rem;
-        padding: 0 0.8rem;
-      }
-
-      .card {
-        padding: 0.8em 1em;
-        font-size: 0.8rem;
-        max-width: 28vw;
-        min-width: 80px;
-      }
-
-      #btns-final {
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 0.8rem !important;
-        margin-bottom: 90px;
-      }
-
-      #btns-final button {
-        font-size: 1rem !important;
-        padding: 0.6em 1.5em !important;
-        white-space: nowrap;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonjour Noemie</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="index.js" defer></script>
 </head>
 <body>
-  <canvas id="c-chars"    style="position:fixed;bottom:0;left:0;width:100%;height:70px;pointer-events:none;z-index:4;display:none;"></canvas>
-  <canvas id="c-petals"    style="position:fixed;inset:0;pointer-events:none;z-index:4;display:none;"></canvas>
-  <canvas id="c-particles" style="position:fixed;inset:0;pointer-events:none;z-index:4;display:none;"></canvas>
+    <canvas id="c-chars"    style="position:fixed;bottom:0;left:0;width:100%;height:70px;pointer-events:none;z-index:4;display:none;"></canvas>
+    <canvas id="c-petals"    style="position:fixed;inset:0;pointer-events:none;z-index:4;display:none;"></canvas>
+    <canvas id="c-particles" style="position:fixed;inset:0;pointer-events:none;z-index:4;display:none;"></canvas>
 
-  <div id="page-3" style="display:none; position:fixed; inset:0; background-color:#fff8f0; align-items:center; justify-content:center; padding:2rem; opacity:0; transition: opacity 0.8s ease; overflow-y:auto;">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem; width:100%;">
-      <p class="texte"><span id="typed2"></span><span id="curseur2" style="display:inline-block; width:2px; height:1.1em; background:#e8a0b4; vertical-align:text-bottom; animation: clignoter 0.7s step-end infinite;"></span></p>
-      <div id="btns-final" style="display:none; opacity:0; transition: opacity 0.7s ease; gap:1.5rem; flex-direction:row; justify-content:center; flex-wrap:wrap;">
-        <a id="btn-final-oui" href="https://wa.me/33781779641?text=Oui%20%F0%9F%8C%B8%20Je%20t%E2%80%99attendais...%20%C3%80%20bient%C3%B4t%20%E2%98%80%EF%B8%8F" target="_blank" style="text-decoration:none;">
-          <button style="background:#e8a0b4; color:#fff; font-family:'Cormorant Garamond',Georgia,serif; font-size:1.3rem; padding:0.7em 2.5em; border:none; border-radius:50px; cursor:pointer; box-shadow:0 4px 16px rgba(232,160,180,0.4); transition:transform 0.15s, box-shadow 0.15s;">Oui 🌸</button>
-        </a>
-        <a id="btn-final-non" href="https://wa.me/33781779641?text=Non...%20(mais%20tu%20sais%20tr%C3%A8s%20bien%20que%20oui%20%F0%9F%98%8F)" target="_blank" style="text-decoration:none;">
-          <button style="background:rgba(255,255,255,0.7); color:#7a5a5a; font-family:'Cormorant Garamond',Georgia,serif; font-size:1.3rem; padding:0.7em 2.5em; border:1px solid #ddd; border-radius:50px; cursor:pointer; transition:transform 0.15s;">Non...</button>
-        </a>
-      </div>
-      <div class="cards" id="cards">
-        <div class="card">Pensée 1</div>
-        <div class="card">Pensée 2</div>
-        <div class="card">Pensée 3</div>
-      </div>
+    <div id="page-3" style="display:none; position:fixed; inset:0; background-color:#fff8f0; align-items:flex-start; justify-content:center; padding:2rem; opacity:0; transition: opacity 0.8s ease; overflow-y:auto; -webkit-overflow-scrolling:touch;">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:2rem; width:100%; margin:auto 0;">
+            <p class="texte"><span id="typed2"></span><span id="curseur2" style="display:inline-block; width:2px; height:1.1em; background:#e8a0b4; vertical-align:text-bottom; animation: clignoter 0.7s step-end infinite;"></span></p>
+            <div id="btns-final" style="display:none; opacity:0; transition: opacity 0.7s ease; gap:1.5rem; flex-direction:row; justify-content:center; flex-wrap:wrap;">
+                <a id="btn-final-oui" href="https://wa.me/33781779641?text=Oui%20%F0%9F%8C%B8%20Je%20t%E2%80%99attendais...%20%C3%80%20bient%C3%B4t%20%E2%98%80%EF%B8%8F" target="_blank" style="text-decoration:none;">
+                    <button style="background:#e8a0b4; color:#fff; font-family:'Cormorant Garamond',Georgia,serif; font-size:1.3rem; padding:0.7em 2.5em; border:none; border-radius:50px; cursor:pointer; box-shadow:0 4px 16px rgba(232,160,180,0.4); transition:transform 0.15s, box-shadow 0.15s;">Oui 🌸</button>
+                </a>
+                <a id="btn-final-non" href="https://wa.me/33781779641?text=Non...%20(mais%20tu%20sais%20tr%C3%A8s%20bien%20que%20oui%20%F0%9F%98%8F)" target="_blank" style="text-decoration:none;">
+                    <button style="background:rgba(255,255,255,0.7); color:#7a5a5a; font-family:'Cormorant Garamond',Georgia,serif; font-size:1.3rem; padding:0.7em 2.5em; border:1px solid #ddd; border-radius:50px; cursor:pointer; transition:transform 0.15s;">Non...</button>
+                </a>
+            </div>
+            <div class="cards" id="cards">
+                <div class="card">Pensée 1</div>
+                <div class="card">Pensée 2</div>
+                <div class="card">Pensée 3</div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div id="page-2">
-    <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
-      <p class="texte"><span id="typed"></span><span id="curseur"></span></p>
-      <button id="btn-suivant" style="display:none; opacity:0; transition: opacity 0.6s ease;">Suivant →</button>
+    <div id="page-2">
+        <div style="display:flex; flex-direction:column; align-items:center; gap:2rem;">
+            <p class="texte"><span id="typed"></span><span id="curseur"></span></p>
+            <button id="btn-suivant" style="display:none; opacity:0; transition: opacity 0.6s ease;">Suivant →</button>
+        </div>
     </div>
-  </div>
 
-  <div class="container">
-    <h1>Bonjour Noemie</h1>
-    <p>Veut tu date avec moi ?</p>
-    <div class="buttons">
-      <button id="btn-oui">Oui</button>
-      <button id="btn-non">Non</button>
+    <div id="page-pense">
+        <div class="page-pense-inner">
+            <p class="texte"><span id="typed-pense"></span><span id="curseur-pense"></span></p>
+            <a id="btn-wa-pense" href="https://wa.me/33781779641?text=Tchao%20bye%20bye%2C%20je%20veut%20plus%20te%20voir" target="_blank" style="display:none; opacity:0; transition: opacity 0.7s ease; text-decoration:none;">
+                <button style="background:#e8a0b4; color:#fff; font-family:'Cormorant Garamond',Georgia,serif; font-size:1.3rem; padding:0.7em 2.5em; border:none; border-radius:50px; cursor:pointer; box-shadow:0 4px 16px rgba(232,160,180,0.4); transition:transform 0.15s, box-shadow 0.15s;">Vas-y tu me soul, jveut plus voir ta grosse tête</button>
+            </a>
+        </div>
+        <div class="cards" id="cards-pense">
+            <div class="card">Pensée 1</div>
+            <div class="card">Pensée 2</div>
+            <div class="card">Pensée 3</div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    document.getElementById('btn-oui').addEventListener('click', () => {
-      gameOver = true;
-      btnNon.style.display = 'none';
-      document.querySelector('.container').style.display = 'none';
-      const page2 = document.getElementById('page-2');
-      page2.style.display = 'flex';
-      requestAnimationFrame(() => requestAnimationFrame(() => page2.style.opacity = '1'));
+    <div class="container">
+        <h1>Bonjour Noemie</h1>
+        <p>Veut tu date avec moi ?</p>
+        <div class="buttons">
+            <button id="btn-oui">Oui</button>
+            <button id="btn-non">Non</button>
+        </div>
 
-      const texte1 = "Tres bon choix, mais avant qu'on se revoit j'aimerais que tu lise ces quelques mots qui reflètent mes pensées pour toi :";
-      const el = document.getElementById('typed');
-      let i = 0;
-      const interval = setInterval(() => {
-        el.textContent += texte1[i];
-        i++;
-        if (i >= texte1.length) {
-          clearInterval(interval);
-          document.getElementById('curseur').style.display = 'none';
-          const btnSuivant = document.getElementById('btn-suivant');
-          btnSuivant.style.display = 'block';
-          requestAnimationFrame(() => requestAnimationFrame(() => btnSuivant.style.opacity = '1'));
-          const think_card1 = "La vérité, c'est qu'il n'y a pas un seul instant où je ne pense pas à toi.\n\nTu es ma première pensée au matin, avant même que la lumière n'ose entrer.\n\nLe dernier murmure dans ma conscience avant que le sommeil ne m'emporte.\n\nIl n'existe pas un seul souffle de ma journée où tu n'es pas là, quelque part.\n\nPas un seul rêve où le désir n'enlace nos corps frémissants, sans permission, se consumant l'un dans l'autre jusqu'à l'ivresse.";
-          const think_card2 = "Je n’ai aucune raison de renoncer à toi.\n\nMême si tu m'as montré la pire facette de toi-même,\nje serai toujours là.\n\nPeu importe à quel point les choses deviennent difficiles \nou à quel point ton humeur peut parfois être mauvaise,\nje continuerai à te choisir.\n\nJe n’aimerai personne d’autre.\n\nÇa a toujours été toi,\net ce sera toujours toi.";
-          const think_card3 = "Alors viens, on se retrouve et on s'aime, bordel.\nViens, on se dit oui, on se voit et on le fait. La vie est trop courte pour qu'on se dise non.\n\nPas pour s'enfermer dans une relation, mais pour laisser nos cœurs vibrer de passion et nos lèvres exprimer l'attirance qu'on a l'un pour l'autre le temps d'un instant, sans se dire que demain existera.\n\nPlage\nSamedi soir\nCoucher de soleil ?\n\nBrunch\nDimanche ?" ;
+        <div class="section-pense">
+            <h2>Ce que je pense</h2>
+            <button id="btn-pense">Vas-y tu me soul, dit moi</button>
+        </div>
+    </div>
 
-          let cardsShown = false;
-          let currentInterval = null;
-          let petalsStarted = false;
-          let particlesStarted = false;
-          let charsStarted = false;
-
-          function startCharacters() {
-            const cv = document.getElementById('c-chars');
-            cv.style.display = 'block';
-            cv.width = cv.offsetWidth || window.innerWidth;
-            cv.height = 70;
-            const cx = cv.getContext('2d');
-            const S = window.innerWidth < 600 ? 3 : 4;
-            const P = [null,'#f5c5a3','#2c1a0e','#5c3d1e','#c87050','#5c8ab4','#3d2d5c','#e8a0b4','#f0ddd0','#1a1209'];
-
-            const BOY = [
-              [[0,3,3,3,3,0,0,0],[0,3,1,1,1,3,0,0],[0,0,1,2,1,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,1,0,0,0,0],[0,5,5,5,5,5,5,5],[0,5,5,5,5,0,0,0],[0,0,6,6,0,6,0,0],[0,6,6,0,0,6,0,0],[9,9,0,0,0,6,0,0],[9,0,0,0,0,9,9,0]],
-              [[0,3,3,3,3,0,0,0],[0,3,1,1,1,3,0,0],[0,0,1,2,1,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,1,0,0,0,0],[0,5,5,5,5,5,5,5],[0,5,5,5,5,0,0,0],[0,0,6,6,0,6,0,0],[0,0,6,0,0,6,6,0],[0,0,6,0,0,0,9,9],[0,9,9,0,0,0,9,0]],
-            ];
-            const GIRL = [
-              [[0,0,4,4,4,4,0,0],[0,0,4,1,1,4,4,0],[0,0,1,1,2,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,0,1,0,0,0],[7,7,7,7,7,7,7,0],[0,0,0,7,7,7,7,0],[0,7,7,7,7,7,7,0],[0,0,8,8,0,8,0,0],[0,9,9,0,0,8,0,0],[0,9,0,0,0,9,9,0]],
-              [[0,0,4,4,4,4,0,0],[0,0,4,1,1,4,4,0],[0,0,1,1,2,1,0,0],[0,0,1,1,1,1,0,0],[0,0,0,0,1,0,0,0],[7,7,7,7,7,7,7,0],[0,0,0,7,7,7,7,0],[0,7,7,7,7,7,7,0],[0,0,8,0,0,8,8,0],[0,0,8,0,0,0,9,9],[0,9,9,0,0,0,9,0]],
-            ];
-            const HEART = [
-              [0,1,1,0,1,1,0],
-              [1,1,1,1,1,1,1],
-              [1,1,1,1,1,1,1],
-              [0,1,1,1,1,1,0],
-              [0,0,1,1,1,0,0],
-              [0,0,0,1,0,0,0],
-            ];
-
-            function drawChar(frames, fi, x, y) {
-              frames[fi].forEach((row, ry) => row.forEach((c, rx) => {
-                if (!c) return;
-                cx.fillStyle = P[c]; cx.fillRect(x + rx*S, y + ry*S, S, S);
-              }));
-            }
-            function drawHeart(x, y) {
-              HEART.forEach((row, ry) => row.forEach((p, rx) => {
-                if (!p) return;
-                cx.fillStyle = '#e8305a';
-                cx.fillRect(x + rx*S, y + ry*S, S, S);
-              }));
-            }
-
-            const CW = 8*S, CH = 11*S, baseY = cv.height - CH - 2;
-            let bx = -CW*3, frame = 0, ft = 0, bob = 0;
-
-            (function loop() {
-              cx.clearRect(0, 0, cv.width, cv.height);
-              bx += 1;
-              if (bx > cv.width + CW) bx = -CW * 3;
-              if (++ft % 15 === 0) frame = (frame+1) % 2;
-              bob += 0.06;
-              const gx = bx + CW;
-              drawChar(BOY, frame, bx, baseY);
-              drawChar(GIRL, frame, gx, baseY);
-              const heartX = bx + CW - 3*S + Math.round(Math.sin(bob) * 0) ;
-              const heartY = baseY - 8*S + Math.round(Math.sin(bob) * S);
-              drawHeart(heartX, heartY);
-              requestAnimationFrame(loop);
-            })();
-          }
-
-          function startPetals() {
-            const cv = document.getElementById('c-petals');
-            cv.width = window.innerWidth; cv.height = window.innerHeight;
-            cv.style.display = 'block';
-            const cx = cv.getContext('2d');
-            const cols = ['#e8a0b4','#f4c2d0','#f9d0dd','#e07090','#fce4ec'];
-            const petals = Array.from({length: 40}, () => ({
-              x: Math.random() * cv.width,
-              y: Math.random() * -cv.height,
-              size: Math.random() * 10 + 6,
-              vy: Math.random() * 1.2 + 0.6,
-              vx: (Math.random() - 0.5) * 0.8,
-              angle: Math.random() * Math.PI * 2,
-              spin: (Math.random() - 0.5) * 0.04,
-              sway: Math.random() * Math.PI * 2,
-              swaySpeed: Math.random() * 0.02 + 0.01,
-              swayAmp: Math.random() * 1.2 + 0.4,
-              c: cols[Math.floor(Math.random() * cols.length)],
-              a: Math.random() * 0.4 + 0.6,
-            }));
-            function drawPetal(x, y, size, angle, color, alpha) {
-              cx.save();
-              cx.globalAlpha = alpha;
-              cx.translate(x, y);
-              cx.rotate(angle);
-              cx.fillStyle = color;
-              cx.beginPath();
-              cx.moveTo(0, 0);
-              cx.bezierCurveTo(size * 0.6, -size * 0.4, size * 1.1, size * 0.3, size * 0.5, size * 0.8);
-              cx.bezierCurveTo(size * 0.1, size * 1.1, -size * 0.3, size * 0.6, 0, 0);
-              cx.fill();
-              cx.restore();
-            }
-            (function loop() {
-              cx.clearRect(0, 0, cv.width, cv.height);
-              petals.forEach(p => {
-                p.sway += p.swaySpeed;
-                p.x += p.vx + Math.sin(p.sway) * p.swayAmp;
-                p.y += p.vy;
-                p.angle += p.spin;
-                if (p.y > cv.height + 20) { p.y = -20; p.x = Math.random() * cv.width; }
-                drawPetal(p.x, p.y, p.size, p.angle, p.c, p.a);
-              });
-              requestAnimationFrame(loop);
-            })();
-          }
-
-          function startParticles() {
-            const cv = document.getElementById('c-particles');
-            cv.width = window.innerWidth; cv.height = window.innerHeight;
-            cv.style.display = 'block';
-            const cx = cv.getContext('2d');
-            const cols = ['#e8a0b4','#f4c2d0','#ffd080','#fff0e0','#ffcce0'];
-            const ps = Array.from({length: 70}, () => ({
-              x: Math.random() * cv.width, y: Math.random() * cv.height,
-              r: Math.random() * 2 + 0.5,
-              vy: -(Math.random() * 0.6 + 0.2),
-              vx: (Math.random() - 0.5) * 0.2,
-              a: Math.random() * 0.6 + 0.2,
-              ph: Math.random() * Math.PI * 2,
-              sp: Math.random() * 0.03 + 0.01,
-              c: cols[Math.floor(Math.random() * cols.length)]
-            }));
-            (function loop() {
-              cx.clearRect(0, 0, cv.width, cv.height);
-              ps.forEach(p => {
-                p.x += p.vx; p.y += p.vy; p.ph += p.sp;
-                if (p.y < -5) { p.y = cv.height + 5; p.x = Math.random() * cv.width; }
-                const a = p.a * (0.4 + 0.6 * Math.abs(Math.sin(p.ph)));
-                cx.save();
-                cx.globalAlpha = a;
-                cx.shadowBlur = p.r * 6; cx.shadowColor = p.c; cx.fillStyle = p.c;
-                cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI * 2); cx.fill();
-                cx.strokeStyle = p.c; cx.lineWidth = 0.5;
-                const l = p.r * 3;
-                cx.beginPath();
-                cx.moveTo(p.x-l, p.y); cx.lineTo(p.x+l, p.y);
-                cx.moveTo(p.x, p.y-l); cx.lineTo(p.x, p.y+l);
-                cx.stroke(); cx.restore();
-              });
-              requestAnimationFrame(loop);
-            })();
-          }
-
-          function playThinkCard(text, cardIndex) {
-            if (currentInterval) clearInterval(currentInterval);
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
-            if (cardIndex !== undefined) document.querySelectorAll('.card')[cardIndex].classList.add('active');
-            const el2 = document.getElementById('typed2');
-            const curseur2 = document.getElementById('curseur2');
-            el2.innerHTML = '';
-            curseur2.style.display = 'inline-block';
-            let j = 0;
-            currentInterval = setInterval(() => {
-              if (text[j] === '\n') {
-                el2.innerHTML += '<br>';
-              } else {
-                el2.innerHTML += text[j];
-              }
-              j++;
-              if (j >= text.length) {
-                clearInterval(currentInterval);
-                curseur2.style.display = 'none';
-                if (!cardsShown) {
-                  cardsShown = true;
-                  document.querySelectorAll('.card').forEach((card, idx) => {
-                    setTimeout(() => card.classList.add('visible'), idx * 200);
-                  });
-                }
-                if (cardIndex === 0 && !petalsStarted) {
-                  petalsStarted = true;
-                  startPetals();
-                }
-                if (cardIndex === 1 && !particlesStarted) {
-                  particlesStarted = true;
-                  startParticles();
-                }
-                if (cardIndex === 2 && !charsStarted) {
-                  charsStarted = true;
-                  startCharacters();
-                  const btns = document.getElementById('btns-final');
-                  btns.style.display = 'flex';
-                  requestAnimationFrame(() => requestAnimationFrame(() => btns.style.opacity = '1'));
-                }
-              }
-            }, 40);
-          }
-
-          document.querySelectorAll('.card')[0].addEventListener('click', () => { if (!document.querySelectorAll('.card')[0].classList.contains('active')) playThinkCard(think_card1, 0); });
-          document.querySelectorAll('.card')[1].addEventListener('click', () => { if (!document.querySelectorAll('.card')[1].classList.contains('active')) playThinkCard(think_card2, 1); });
-          document.querySelectorAll('.card')[2].addEventListener('click', () => { if (!document.querySelectorAll('.card')[2].classList.contains('active')) playThinkCard(think_card3, 2); });
-
-          btnSuivant.addEventListener('click', () => {
-            document.getElementById('page-2').style.opacity = '0';
-            setTimeout(() => {
-              document.getElementById('page-2').style.display = 'none';
-              const page3 = document.getElementById('page-3');
-              page3.style.display = 'flex';
-              requestAnimationFrame(() => requestAnimationFrame(() => {
-                page3.style.opacity = '1';
-                playThinkCard(think_card1, 0);
-              }));
-            }, 800);
-          });
-        }
-      }, 40);
-    });
-
-    const btnNon = document.getElementById('btn-non');
-    const TRIGGER_DISTANCE = 80;
-    let escapeCount = 0;
-    let lastEffectTime = 0;
-    let gameOver = false;
-
-    function spawnTexts(content, color) {
-      for (let i = 0; i < 15; i++) {
-        const el = document.createElement('span');
-        el.textContent = content;
-        el.style.cssText = `
-          position: fixed;
-          font-size: ${1.2 + Math.random() * 2}rem;
-          font-family: 'Georgia', serif;
-          font-weight: bold;
-          color: ${color};
-          left: ${Math.random() * 90}vw;
-          top: ${Math.random() * 90}vh;
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
-          z-index: 999;
-          transform: rotate(${-20 + Math.random() * 40}deg);
-        `;
-        document.body.appendChild(el);
-        setTimeout(() => el.style.opacity = '1', 50);
-        setTimeout(() => {
-          el.style.opacity = '0';
-          setTimeout(() => el.remove(), 500);
-        }, 2000 + Math.random() * 1000);
-      }
-    }
-
-    function spawnEmojis() {
-      const emojis = ['😂', '🤣', '😆', '😄'];
-      for (let i = 0; i < 20; i++) {
-        const el = document.createElement('span');
-        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        el.style.cssText = `
-          position: fixed;
-          font-size: ${1.5 + Math.random() * 2.5}rem;
-          left: ${Math.random() * 90}vw;
-          top: ${Math.random() * 90}vh;
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
-          z-index: 999;
-        `;
-        document.body.appendChild(el);
-        setTimeout(() => el.style.opacity = '1', 50);
-        setTimeout(() => {
-          el.style.opacity = '0';
-          setTimeout(() => el.remove(), 500);
-        }, 2000 + Math.random() * 1000);
-      }
-    }
-
-    let isFixed = false;
-
-    function handlePointer(clientX, clientY) {
-      if (gameOver) return;
-      const rect = btnNon.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = clientX - cx;
-      const dy = clientY - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const e = { clientX, clientY };
-
-      if (dist < TRIGGER_DISTANCE) {
-        if (!isFixed) {
-          const r = btnNon.getBoundingClientRect();
-          btnNon.style.position = 'fixed';
-          btnNon.style.left = r.left + 'px';
-          btnNon.style.top = r.top + 'px';
-          isFixed = true;
-        }
-        const margin = 80;
-        let newX, newY, attempts = 0;
-        do {
-          newX = margin + Math.random() * (window.innerWidth - margin * 2);
-          newY = margin + Math.random() * (window.innerHeight - margin * 2);
-          const fdx = clientX - newX;
-          const fdy = clientY - newY;
-          if (Math.sqrt(fdx * fdx + fdy * fdy) > 200) break;
-          attempts++;
-        } while (attempts < 15);
-        btnNon.style.transform = '';
-        btnNon.style.left = newX + 'px';
-        btnNon.style.top = newY + 'px';
-        const now = Date.now();
-        if (now - lastEffectTime >= 1000) {
-          lastEffectTime = now;
-          escapeCount++;
-          if (escapeCount === 1) spawnEmojis();
-          else if (escapeCount === 2) spawnTexts('Oléééééé !', '#e8a0b4');
-          else if (escapeCount === 3) spawnTexts('youhhuuuuuuu', '#f4a261');
-          else if (escapeCount === 4) { spawnTexts('Oléééééé !', '#e8a0b4'); spawnEmojis(); }
-          else if (escapeCount === 5) { spawnTexts('Encore raté !', '#f4a261'); spawnEmojis(); }
-          else if (escapeCount === 6) {
-            btnNon.style.transition += ', font-size 0.5s ease, padding 0.5s ease';
-            btnNon.style.fontSize = '0.6rem';
-            btnNon.style.padding = '0.3em 1em';
-            const btnOui = document.getElementById('btn-oui');
-            btnOui.style.transition = 'font-size 0.5s ease, padding 0.5s ease, box-shadow 0.5s ease';
-            btnOui.style.fontSize = '2rem';
-            btnOui.style.padding = '0.8em 2.5em';
-          }
-        }
-      }
-    }
-
-    const isMobile = navigator.maxTouchPoints > 0;
-
-    if (isMobile) {
-      btnNon.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        const t = e.touches[0];
-        handlePointer(t.clientX, t.clientY);
-      }, { passive: false });
-    } else {
-      document.addEventListener('mousemove', (e) => {
-        handlePointer(e.clientX, e.clientY);
-      });
-    }
-
-  </script>
 </body>
 </html>

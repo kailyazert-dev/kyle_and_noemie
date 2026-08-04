@@ -1,0 +1,326 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff8f0, #fde8f0, #fff0e8, #fdf0ff);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+@keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    /* auto = centré verticalement quand ça tient, 0 quand ça dépasse (donc scrollable) */
+    margin: auto 0;
+    padding: 2rem 0;
+}
+
+h1 {
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    color: #2c2c2c;
+    text-align: center;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+}
+
+p {
+    font-size: clamp(1.2rem, 3.5vw, 2.5rem);
+    color: #7a5a5a;
+    text-align: center;
+    font-style: italic;
+}
+
+.buttons {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.5rem;
+}
+
+button {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-family: 'Georgia', serif;
+    padding: 0.6em 2em;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+#btn-oui {
+    background-color: #e8a0b4;
+    color: #fff;
+}
+
+#btn-oui:hover {
+    transform: scale(1.07);
+    box-shadow: 0 4px 14px rgba(232, 160, 180, 0.5);
+}
+
+#btn-non {
+    background-color: #ddd;
+    color: #555;
+    transition: left 0.1s ease, top 0.1s ease, transform 0.1s ease;
+}
+
+#page-2 {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: #fff8f0;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+#page-2.visible {
+    display: flex;
+    opacity: 1;
+}
+
+.cards {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: fixed;
+    bottom: 2rem;
+    left: 0;
+    right: 0;
+}
+
+.card {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(232,160,180,0.25);
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(232,160,180,0.15);
+    padding: 1.4em 1.8em;
+    max-width: 200px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: #2c2c2c;
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+}
+
+/* invisible (opacity 0) mais toujours cliquable sinon : on désactive les clics */
+.card:not(.visible) {
+    pointer-events: none;
+}
+
+.card.visible:not(.active):hover {
+    box-shadow: 0 8px 32px rgba(232,160,180,0.3);
+    border-color: rgba(232,160,180,0.5);
+    transform: translateY(-3px);
+}
+
+.card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card.active {
+    border: 2px solid #e8a0b4;
+    box-shadow: 0 4px 20px rgba(232, 160, 180, 0.35);
+    cursor: default;
+}
+
+#page-3 .texte {
+    font-size: clamp(1rem, 1.8vw, 1.2rem);
+    max-width: 750px;
+    line-height: 1.8;
+    color: #2c2c2c;
+    text-align: center;
+}
+
+#typed2 br {
+    display: block;
+    content: '';
+    margin-top: -0.4em;
+}
+
+#page-2 .texte {
+    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    color: #2c2c2c;
+    text-align: center;
+    max-width: 750px;
+    line-height: 1.8;
+}
+
+.section-pense {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(232, 160, 180, 0.3);
+    width: 100%;
+    max-width: 650px;
+}
+
+.section-pense h2 {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: #2c2c2c;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-align: center;
+}
+
+#btn-pense {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(232, 160, 180, 0.5);
+    color: #7a5a5a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    transition: opacity 0.5s ease, transform 0.1s, box-shadow 0.1s;
+}
+
+#btn-pense:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(232, 160, 180, 0.35);
+}
+
+#page-pense {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: #fff8f0;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 5;
+}
+
+#page-pense.visible {
+    display: flex;
+}
+
+.page-pense-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    /* centré quand ça tient, scrollable quand ça dépasse */
+    margin: auto 0;
+    /* réserve la place des cards fixées en bas */
+    padding-bottom: 140px;
+}
+
+#page-pense .texte {
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    max-width: 750px;
+    line-height: 1.8;
+    color: #2c2c2c;
+    text-align: center;
+}
+
+#typed-pense br {
+    display: block;
+    content: '';
+    margin-top: -0.4em;
+}
+
+#curseur, #curseur-pense {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: #e8a0b4;
+    vertical-align: text-bottom;
+    animation: clignoter 0.7s step-end infinite;
+}
+
+@keyframes clignoter {
+    50% { opacity: 0; }
+}
+
+
+@media (max-width: 600px) {
+    h1 { font-size: clamp(2rem, 11vw, 3.5rem); }
+
+    p { font-size: clamp(1rem, 4.5vw, 1.4rem); }
+
+    button { font-size: 1rem; padding: 0.7em 1.8em; }
+
+    #page-2 .texte { font-size: 1rem; padding: 0 0.5rem; }
+
+    .section-pense { margin-top: 1.2rem; padding-top: 1.5rem; }
+
+    .section-pense h2 { font-size: 1.4rem; }
+
+    #btn-pense { font-size: 0.95rem; padding: 0.7em 1.4em; text-align: center; }
+
+    #page-pense .texte {
+        font-size: 0.95rem;
+        padding: 0 1rem;
+    }
+
+    .page-pense-inner {
+        gap: 1.5rem;
+        padding-bottom: 120px;
+    }
+
+    #btn-wa-pense button {
+        font-size: 1rem !important;
+        padding: 0.6em 1.8em !important;
+        white-space: nowrap;
+    }
+
+    #page-3 .texte {
+        font-size: 0.95rem;
+        padding: 0 1rem;
+        padding-bottom: 130px;
+    }
+
+    .cards {
+        gap: 0.7rem;
+        bottom: 1rem;
+        padding: 0 0.8rem;
+    }
+
+    .card {
+        padding: 0.8em 1em;
+        font-size: 0.8rem;
+        max-width: 28vw;
+        min-width: 80px;
+    }
+
+    #btns-final {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 0.8rem !important;
+        margin-bottom: 90px;
+    }
+
+    #btns-final button {
+        font-size: 1rem !important;
+        padding: 0.6em 1.5em !important;
+        white-space: nowrap;
+    }
+}
